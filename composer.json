@@ -1,0 +1,54 @@
+{
+    "name": "peresmishnyk/laravel-recaptcha",
+    "description": "reCaptcha v3 wrapper for laravel",
+    "keywords": [
+        "peresmishnyk",
+        "laravel-recaptcha"
+    ],
+    "homepage": "https://github.com/peresmishnyk/laravel-recaptcha",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Michkire Dmytro",
+            "email": "michkire@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "illuminate/support": "^6.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^4.0",
+        "phpunit/phpunit": "^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Peresmishnyk\\LaravelRecaptcha\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Peresmishnyk\\LaravelRecaptcha\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Peresmishnyk\\LaravelRecaptcha\\LaravelRecaptchaServiceProvider"
+            ],
+            "aliases": {
+                "LaravelRecaptcha": "Peresmishnyk\\LaravelRecaptcha\\LaravelRecaptchaFacade"
+            }
+        }
+    }
+}
