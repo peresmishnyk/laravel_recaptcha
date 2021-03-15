@@ -2,9 +2,12 @@
 
 namespace Peresmishnyk\LaravelRecaptcha;
 
+use Illuminate\Support\Facades\Session;
+
 class LaravelRecaptcha
 {
     const RECAPTCHA_VERIFY_ENDPOINT_URL = 'https://www.google.com/recaptcha/api/siteverify';
+    const COOKIES_NAME = 'laravel-recaptcha';
     protected $site_key;
     protected $secret_key;
 
@@ -20,8 +23,7 @@ class LaravelRecaptcha
     {
         return view('laravel-recaptcha::inject',
             [
-                'site_key' => $this->site_key,
-                'action' => $action
+                'site_key' => $this->site_key
             ]);
     }
 
@@ -30,9 +32,9 @@ class LaravelRecaptcha
         $target_url = self::RECAPTCHA_VERIFY_ENDPOINT_URL;
         $post = [
             'secret' => $this->secret_key,
-            'response' =>$token,
+            'response' => $token,
         ];
-        if (!is_null($ip)){
+        if (!is_null($ip)) {
             $post['remoteip'] = $ip;
         }
 
@@ -45,7 +47,13 @@ class LaravelRecaptcha
         $result = curl_exec($ch);
 
         $curlresponse = json_decode($result, true);
-        
-        return $curlresponse;
+
+        $score = 0;
+
+        if (isset($curlresponse['success']) && $curlresponse['success'] == true){
+            $score = $curlresponse['score'];
+        }
+
+        return $score;
     }
 }
