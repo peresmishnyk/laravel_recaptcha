@@ -2,12 +2,10 @@
 
 namespace Peresmishnyk\LaravelRecaptcha;
 
-use Illuminate\Support\Facades\Session;
-
 class LaravelRecaptcha
 {
     const RECAPTCHA_VERIFY_ENDPOINT_URL = 'https://www.google.com/recaptcha/api/siteverify';
-    const COOKIES_NAME = 'laravel-recaptcha';
+    protected $cookie_name;
     protected $site_key;
     protected $secret_key;
 
@@ -17,17 +15,19 @@ class LaravelRecaptcha
         // Save config keys
         $this->site_key = $config['site_key'];
         $this->secret_key = $config['secret_key'];
+        $this->cookie_name = $config['cookie_name'];
     }
 
     public function js($action = '')
     {
         return view('laravel-recaptcha::inject',
             [
-                'site_key' => $this->site_key
+                'site_key' => $this->site_key,
+                'cookie_name' => $this->cookie_name
             ]);
     }
 
-    public function verify($token, $ip = null)
+    public function validate_token($token, $ip=null)
     {
         $target_url = self::RECAPTCHA_VERIFY_ENDPOINT_URL;
         $post = [
@@ -50,10 +50,17 @@ class LaravelRecaptcha
 
         $score = 0;
 
-        if (isset($curlresponse['success']) && $curlresponse['success'] == true){
+        if (isset($curlresponse['success']) && $curlresponse['success'] == true) {
             $score = $curlresponse['score'];
         }
+        return $score;
+    }
 
+
+    public function validate()
+    {
+        $token = $_COOKIE[$this->cookie_name] ?? "";
+        $score = $this->validate_token($token);
         return $score;
     }
 }
